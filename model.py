@@ -58,6 +58,6 @@ class Model:
             {"$sort": {"documents.start_time": 1}},
         ]
         return self.db["occupancy"].aggregate(pipeline)
-        # data = self.collection.aggregate(pipeline)
-        # list_data = list(data)
-        # return list_data
+
+    def occupancy_classification_update_date(self, _id, status,name):
+        self.db["occupancy"].update_one({"_id": _id}, {"$set": {"validated_by": name,"is_occupancy_correct":status}})
