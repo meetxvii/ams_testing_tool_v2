@@ -17,13 +17,12 @@ class OccupancyClassification(Controller):
             self.model.get_occupancy_data(site_name, floor_name, start_time, end_time)
         )
 
-        # print(self.data[0])
-
     def update_view(self, display_object):
         display_object.scene.clear()
         documents = self.data[self.current_position]
 
         image_url = documents["_id"]
+        print(image_url)
         image = QPixmap()
         image.loadFromData(requests.get(image_url).content)
         image = image.scaled(1100, 1100, Qt.KeepAspectRatio)
@@ -41,11 +40,11 @@ class OccupancyClassification(Controller):
             self.current_image_size.height(),
         )
         current_data = self.data[self.current_position]
+        self.roi_values = []
+        self.status_dic = {}
         for document in current_data["documents"]:
-            print(document["_id"])
             polygons = []
             for rois in document["img_data"]["rois"]:
-                # print(rois["points"])
                 if rois["status"] == "full":
                     self.color = Qt.green
                 elif rois["status"] == "empty":
@@ -63,19 +62,25 @@ class OccupancyClassification(Controller):
                 self.item = CustomPolygon(polygon, self.color)
                 self.item.setPen(QPen(self.color, 3, Qt.SolidLine))
                 display_object.scene.addItem(self.item)
-                # self.status_dic[roi_id]=self.item
+                self.status_dic[document["_id"]] = self.item
+                self.roi_values.append(document["_id"])
 
-    def on_approve_button_click(self,display_object):
+    def on_approve_button_click(self, display_object):
+        for database_id in self.roi_values:
+            
+            self.model.occupancy_classification_update_date(database_id, self.status_dic[database_id].status,"prink hapaliya")
+
         if self.current_position == len(self.data) - 1:
             return
         self.current_position += 1
         self.update_view(display_object)
-        
-    def on_skip_button_click(self,display_object):
+
+    def on_skip_button_click(self, display_object):
         if self.current_position == len(self.data) - 1:
             return
         self.current_position += 1
         self.update_view(display_object)
+
 
 class CustomPolygon(QGraphicsPolygonItem):
     def __init__(
@@ -106,6 +111,3 @@ class CustomPolygon(QGraphicsPolygonItem):
             self.color = Qt.red
             self.setPen(QPen(Qt.red, 3, Qt.SolidLine))
 
-    def update_database(self, id_, status):
-        self.id_ = id_
-        self.database_object.update_date(self.id_, status)
