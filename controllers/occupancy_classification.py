@@ -74,16 +74,10 @@ class OccupancyClassification(Controller):
             
             self.model.occupancy_classification_update_date(database_id, self.status_dic[database_id].status,"prink hapaliya")
 
-        if self.current_position == len(self.data) - 1:
-            return
-        self.current_position += 1
-        self.update_view(display_object)
+        self.on_next_button_click(display_object)
 
     def on_skip_button_click(self, display_object):
-        if self.current_position == len(self.data) - 1:
-            return
-        self.current_position += 1
-        self.update_view(display_object)
+        self.on_next_button_click(display_object)
 
 
 class CustomPolygon(QGraphicsPolygonItem):

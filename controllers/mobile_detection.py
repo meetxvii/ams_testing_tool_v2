@@ -139,11 +139,11 @@ class MobileDetection(Controller):
 
         self.model.store_new_bboxes(new_bboxes_data)
 
+        self.on_next_button_click(display_object)
+
     
     def on_skip_button_click(self, display_object):
-        if self.current_position > 0:
-            self.current_position -= 1
-            self.update_view(display_object)
+        self.on_next_button_click(display_object)
 
     def enterEvent(self, event, display_object):
         if self.drawing_mode:
