@@ -2,6 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from controller import Controller
+import requests
 
 class DrawableRectItem(QGraphicsRectItem):
     def __init__(self, rect=QRectF(), pen=QPen(Qt.white, 3), brush=QBrush(Qt.NoBrush)):
