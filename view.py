@@ -19,12 +19,19 @@ class View(QObject):
         
         self.filters = Filters(self.controller)
         self.layout.addLayout(self.filters.layout)
-        
+        self.layout.addStretch()
+
         self.display = Display(self.controller)
         self.layout.addLayout(self.display.layout)
+        self.layout.addStretch()
 
         self.actions = Actions(self.controller,self.display)
         self.layout.addLayout(self.actions.layout)
+        self.controller.actions = self.actions
+        self.layout.addStretch()
+
+        self.layout.addWidget(self.actions.widgets['status_bar'])
+        self.layout.addStretch()
 
         self.create_signals()
 

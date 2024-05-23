@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from datetime import datetime
+import constants
 
 
 class Model:
@@ -61,3 +62,19 @@ class Model:
 
     def occupancy_classification_update_date(self, _id, status,name):
         self.db["occupancy"].update_one({"_id": _id}, {"$set": {"validated_by": name,"is_occupancy_correct":status}})
+
+    def update_mobile_data(self,correct_bboxes,wrong_bboxes):
+        collection = self.db['mobile_usages']
+        
+        correct_result = collection.update_many({"_id":{"$in":correct_bboxes}},
+                                                {"$set":{"is_correct":True, "validated_by":constants.VALIDATOR_NAME}})
+    
+        wrong_result = collection.update_many({"_id":{"$in":wrong_bboxes}},
+                                                {"$set":{"is_correct":False, "validated_by":constants.VALIDATOR_NAME}})
+
+        return correct_result.modified_count and wrong_result.modified_count
+
+    def store_new_bboxes(self,document):
+        collection = self.db['corrected_mobiles']
+        document['validated_by'] = constants.VALIDATOR_NAME
+        return collection.insert_one(document).acknowledged

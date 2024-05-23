@@ -23,18 +23,32 @@ class Controller:
         floors = self.model.get_floors(selected_site)
         floor_widget.clear()
         floor_widget.addItems(floors)
+    
+    
 
     def on_next_button_click(self, display_object):
         if len(self.data) == self.current_position:
             return
         self.current_position += 1
         self.update_view(display_object)
+        self.update_status_bar()
 
     def on_previous_button_click(self, display_object):
         if self.current_position == 0:
             return
         self.current_position -= 1
         self.update_view(display_object)
+        self.update_status_bar()
+
+    def update_status_bar(self):
+        self.actions.widgets['image_counter'].setText(f"{self.current_position+1}/{len(self.data)}")
+
+
+    def enterEvent(self, event, display_object):
+        pass
+
+    def leaveEvent(self, event, display_object):
+        pass
 
     def mousePressEvent(self, event, display_object):
         pass
