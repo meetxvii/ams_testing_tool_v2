@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 import constants
 from handlers.filters import Filters
 from handlers.display import Display
-from controller import MobileDetection
+from controller import *
 
 class View(QObject):
     close_signal = pyqtSignal()
@@ -39,6 +39,8 @@ class View(QObject):
     def create_controller(self):
         if constants.MODEL == "Mobile Detection":
             return MobileDetection()
+        elif constants.MODEL == "Occupancy Classification":
+            return OccupancyDetection()
         
     def show_window(self):
         self.window.setLayout(self.layout)
