@@ -1,8 +1,9 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QGraphicsPolygonItem
+from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtGui import QPen, QPolygonF, QPixmap
 import requests
 from controller import Controller
+import constants
 
 
 class OccupancyClassification(Controller):
@@ -19,16 +20,25 @@ class OccupancyClassification(Controller):
         self.update_status_bar()
 
     def update_view(self, display_object):
-        if len(self.data) == 0 or self.current_position == len(self.data)-1:
+        if len(self.data) == 0 :
+            self.actions.widgets["status_bar"].showMessage("No data found")
+            return
+        
+        elif self.current_position == len(self.data)-1:
+            self.actions.widgets["status_bar"].showMessage("End of data")
             return
         
         display_object.scene.clear()
         documents = self.data[self.current_position]
 
         image_url = documents["_id"]
-        print(image_url)
+        
         image = QPixmap()
-        image.loadFromData(requests.get(image_url).content)
+        try:
+            image.loadFromData(requests.get(image_url).content)
+        except Exception as e:
+            self.actions.widgets["status_bar"].showMessage("Error loading image")
+            return
         image = image.scaled(1100, 1100, Qt.KeepAspectRatio)
         self.current_image_size = image.size()
         display_object.scene.addPixmap(image)
@@ -37,6 +47,8 @@ class OccupancyClassification(Controller):
         display_object.view.setFixedSize(width + 2, height + 2)
 
         self.display_roi(display_object)
+        self.actions.widgets["status_bar"].clearMessage()
+
 
     def display_roi(self, display_object):
         width, height = (
@@ -72,7 +84,7 @@ class OccupancyClassification(Controller):
     def on_approve_button_click(self, display_object):
         for database_id in self.roi_values:
             
-            self.model.occupancy_classification_update_date(database_id, self.status_dic[database_id].status,"prink hapaliya")
+            self.model.occupancy_classification_update_date(database_id, self.status_dic[database_id].status,constants.VALIDATOR_NAME)
 
         self.on_next_button_click(display_object)
 

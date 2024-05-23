@@ -1,7 +1,5 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from controller import Controller
+from PyQt5.QtWidgets import QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
 import constants
 class Display:
     def __init__(self,controller) -> None:
@@ -20,13 +18,14 @@ class Display:
 
     def create_action_button(self, text, action):
         button = QPushButton(text)
+        button.setFixedSize(50,100)
         button.clicked.connect(lambda : action(self))
         return button
     
     def create_view(self):
         self.scene = QGraphicsScene()
         self.view = QGraphicsView()
-        self.view.setFixedSize(1100,800)
+        self.view.setFixedSize(1100,600)
         self.view.setScene(self.scene)
         self.view.show()
 

@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QShortcut
+from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtGui import QKeySequence
 import constants
 from handlers.filters import Filters
 from handlers.display import Display
@@ -28,7 +28,7 @@ class View(QObject):
         self.actions = Actions(self.controller,self.display)
         self.layout.addLayout(self.actions.layout)
         self.controller.actions = self.actions
-        self.layout.addStretch()
+        # self.layout.addStretch()
 
         self.layout.addWidget(self.actions.widgets['status_bar'])
         self.layout.addStretch()
@@ -46,6 +46,9 @@ class View(QObject):
     
     def create_signals(self):
         self.filters.on_filter_change.connect(lambda:self.controller.update_view(self.display))
+        QShortcut("s", self.window).activated.connect(lambda:self.controller.on_approve_button_click(self.display))
+        QShortcut("right",self.window).activated.connect(lambda:self.controller.on_next_button_click(self.display))
+        QShortcut("left",self.window).activated.connect(lambda:self.controller.on_previous_button_click(self.display))
         QShortcut(QKeySequence("Ctrl+Q"), self.window).activated.connect(self.on_window_close)
     
     def create_controller(self):

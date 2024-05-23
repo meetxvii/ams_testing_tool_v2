@@ -1,8 +1,4 @@
 from model import Model
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
 
 class Controller:
     def __init__(self) -> None:

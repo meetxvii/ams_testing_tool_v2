@@ -1,6 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication,QGraphicsRectItem
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QPen, QBrush, QTransform, QPixmap
 from controller import Controller
 import requests
 from pprint import pprint
@@ -58,7 +58,12 @@ class MobileDetection(Controller):
         self.update_status_bar()
 
     def update_view(self, display_object):
-        if len(self.data) == 0 or self.current_position == len(self.data)-1:
+        if len(self.data) == 0 :
+            self.actions.widgets["status_bar"].showMessage("No data found")
+            return
+        
+        elif self.current_position == len(self.data)-1:
+            self.actions.widgets["status_bar"].showMessage("End of data")
             return
 
         display_object.scene.clear()
@@ -66,7 +71,11 @@ class MobileDetection(Controller):
 
         image_url = documents["_id"]
         image = QPixmap()
-        image.loadFromData(requests.get(image_url).content)
+        try:
+            image.loadFromData(requests.get(image_url).content)
+        except Exception as e:
+            self.actions.widgets["status_bar"].showMessage("Error loading image")
+            return
         image = image.scaled(1100, 1100, Qt.KeepAspectRatio)
         self.current_image_size = image.size()
         display_object.scene.addPixmap(image)
@@ -75,6 +84,7 @@ class MobileDetection(Controller):
         display_object.view.setFixedSize(width + 2, height + 2)
 
         self.display_bboxes(documents['documents'], display_object)
+        self.actions.widgets["status_bar"].clearMessage()
 
     def display_bboxes(self, documents, display_object):
         self.old_bboxes = dict()

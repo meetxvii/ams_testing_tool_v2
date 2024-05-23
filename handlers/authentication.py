@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QWidget,QVBoxLayout,QLineEdit,QPushButton,QDesktopWidget
+from PyQt5.QtCore import QObject,pyqtSignal
 import constants
 class AuthenticationHandler(QObject):
     authentication_signal = pyqtSignal(str)
@@ -15,19 +14,29 @@ class AuthenticationHandler(QObject):
         self.window.setWindowTitle("Authentication")
         
     def create_login_form(self):
-        self.login_form = QFormLayout()
+        self.layout = QVBoxLayout()
         self.validator_name = QLineEdit()
-        self.validator_name.setPlaceholderText("Enter your validator name")
+        self.validator_name.setPlaceholderText("Enter validator name")
         self.submit = QPushButton("Submit")
+        self.submit.setFixedHeight(50)
         self.submit.clicked.connect(self.submit_form)
-        self.login_form.addRow("validator_name",self.validator_name)
-        self.login_form.addRow(self.submit)
+        self.layout.addWidget(self.validator_name)
+        self.layout.addWidget(self.submit)
     
     def start_authentication(self):
-        self.window.setLayout(self.login_form)
+        self.window.setLayout(self.layout)
+        self.window.setFixedSize(300,200)
         self.window.show()
 
+        qr = self.window.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.window.move(qr.topLeft())
+
     def submit_form(self):
-        constants.VALIDATOR_NAME = self.validator_name.text()
+        validator_name = self.validator_name.text()
+        if validator_name == "":
+            return            
+        constants.VALIDATOR_NAME = validator_name
         self.window.close()
         self.authentication_signal.emit(constants.VALIDATOR_NAME)
