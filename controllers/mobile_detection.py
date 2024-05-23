@@ -62,7 +62,7 @@ class MobileDetection(Controller):
             self.actions.widgets["status_bar"].showMessage("No data found")
             return
         
-        elif self.current_position == len(self.data)-1:
+        elif self.current_position >= len(self.data)-1:
             self.actions.widgets["status_bar"].showMessage("End of data")
             return
 
