@@ -28,4 +28,11 @@ class Display:
         self.view.setFixedSize(1100,800)
         self.view.setScene(self.scene)
         self.view.show()
+
+        self.view.mousePressEvent = lambda event : self.controller.mousePressEvent(event,self)
+        self.view.mouseMoveEvent = lambda event : self.controller.mouseMoveEvent(event,self)
+        self.view.mouseReleaseEvent = lambda event : self.controller.mouseReleaseEvent(event,self)
+        self.view.keyPressEvent = lambda event : self.controller.keyPressEvent (event,self)
+        self.view.keyReleaseEvent = lambda event : self.controller.keyReleaseEvent(event,self)
+        self.view.wheelEvent = lambda event : self.controller.wheelEvent(event,self)
         return self.view

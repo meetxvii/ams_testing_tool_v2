@@ -36,4 +36,23 @@ class Controller:
         self.current_position -= 1
         self.update_view(display_object)
 
+    def mousePressEvent(self, event, display_object):
+        pass
+
+    def mouseMoveEvent(self, event, display_object):
+        pass
+
+    def mouseReleaseEvent(self, event, display_object):
+        pass
+
+    def keyPressEvent(self, event, display_object):
+        pass
+
+    def keyReleaseEvent(self, event, display_object):
+        pass
+
+    def wheelEvent(self, event, display_object):
+        change = event.angleDelta().y()//120
+        display_object.view.scale(1+change/10,1+change/10)
+        display_object.view.centerOn(display_object.view.mapToScene(event.pos()))
 
