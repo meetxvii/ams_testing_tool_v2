@@ -2,7 +2,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import requests
-from handlers.drawable_rect import DrawableRectItem
 from controller import Controller
 
 

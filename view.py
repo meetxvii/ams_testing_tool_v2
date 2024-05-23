@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 import constants
 from handlers.filters import Filters
 from handlers.display import Display
+from handlers.actions import Actions
 from controllers.occupancy_classification import OccupancyClassification
 from controllers.mobile_detection import MobileDetection
 
@@ -21,6 +22,9 @@ class View(QObject):
         
         self.display = Display(self.contoller)
         self.layout.addLayout(self.display.layout)
+
+        self.actions = Actions(self.contoller)
+        self.layout.addLayout(self.actions.layout)
 
         self.create_signals()
 
