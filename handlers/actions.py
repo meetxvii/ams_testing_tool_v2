@@ -3,12 +3,13 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 class Actions(QObject):
-    def __init__(self, controller) -> None:
+    def __init__(self, controller,display) -> None:
         super().__init__()
         self.widgets = dict()
         self.layout = QHBoxLayout()
         self.controller = controller
-
+        self.display_object=display
+        
         self.widgets['approve_btn'] = self.create_action_button("Approve", self.controller.on_approve_button_click)
         self.layout.addWidget(self.widgets['approve_btn'])
         
@@ -17,5 +18,5 @@ class Actions(QObject):
 
     def create_action_button(self, text, action):
         button = QPushButton(text)
-        button.clicked.connect(lambda : action(self))
+        button.clicked.connect(lambda :action(self.display_object))
         return button

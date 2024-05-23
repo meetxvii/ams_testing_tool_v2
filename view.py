@@ -23,7 +23,7 @@ class View(QObject):
         self.display = Display(self.controller)
         self.layout.addLayout(self.display.layout)
 
-        self.actions = Actions(self.controller)
+        self.actions = Actions(self.controller,self.display)
         self.layout.addLayout(self.actions.layout)
 
         self.create_signals()

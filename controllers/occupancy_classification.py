@@ -65,6 +65,17 @@ class OccupancyClassification(Controller):
                 display_object.scene.addItem(self.item)
                 # self.status_dic[roi_id]=self.item
 
+    def on_approve_button_click(self,display_object):
+        if self.current_position == len(self.data) - 1:
+            return
+        self.current_position += 1
+        self.update_view(display_object)
+        
+    def on_skip_button_click(self,display_object):
+        if self.current_position == len(self.data) - 1:
+            return
+        self.current_position += 1
+        self.update_view(display_object)
 
 class CustomPolygon(QGraphicsPolygonItem):
     def __init__(
@@ -95,6 +106,6 @@ class CustomPolygon(QGraphicsPolygonItem):
             self.color = Qt.red
             self.setPen(QPen(Qt.red, 3, Qt.SolidLine))
 
-    # def update_database(self, id_, status):
-    #     self.id_ = id_
-    #     self.database_object.update_date(self.id_, status)
+    def update_database(self, id_, status):
+        self.id_ = id_
+        self.database_object.update_date(self.id_, status)
