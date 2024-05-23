@@ -11,7 +11,7 @@ class DrawableRectItem(QGraphicsRectItem):
         self.setBrush(brush)
         self.initial_pen = pen  # Store the initial pen
         self.is_hovering = False  # Track hover state
-        self.is_createing = True
+        self.is_creating = True
         self.offset = []
         self.data = None
         self.is_changed = False

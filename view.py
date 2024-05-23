@@ -15,15 +15,15 @@ class View(QObject):
         self.app = app
         self.create_window()
 
-        self.contoller = self.create_controller()
+        self.controller = self.create_controller()
         
-        self.filters = Filters(self.contoller)
+        self.filters = Filters(self.controller)
         self.layout.addLayout(self.filters.layout)
         
-        self.display = Display(self.contoller)
+        self.display = Display(self.controller)
         self.layout.addLayout(self.display.layout)
 
-        self.actions = Actions(self.contoller)
+        self.actions = Actions(self.controller)
         self.layout.addLayout(self.actions.layout)
 
         self.create_signals()
@@ -38,7 +38,7 @@ class View(QObject):
         self.layout = QVBoxLayout()
     
     def create_signals(self):
-        self.filters.on_filter_change.connect(lambda:self.contoller.update_view(self.display))
+        self.filters.on_filter_change.connect(lambda:self.controller.update_view(self.display))
         QShortcut(QKeySequence("Ctrl+Q"), self.window).activated.connect(self.on_window_close)
     
     def create_controller(self):
