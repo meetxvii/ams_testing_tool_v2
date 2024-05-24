@@ -118,16 +118,18 @@ class MobileDetection(Controller):
 
        
     def on_approve_button_click(self, display_object):
+        correct_documents = []
         correct_bboxes = []
-        wrong_bboxes = []
+        wrong_documents = []
         for document,bboxes in self.old_bboxes.items():
             for bbox in bboxes:
                 if bbox.is_correct:
-                    correct_bboxes.append(document)
+                    correct_documents.append(document)
+                    correct_bboxes.append(bbox)
                 else:
                     self.data[self.current_position]['documents'][bbox.index_in_document]['is_correct'] = False
-                    wrong_bboxes.append(document)
-        self.model.update_mobile_data(correct_bboxes,wrong_bboxes)       
+                    wrong_documents.append(document)
+        self.model.update_mobile_data(correct_documents,wrong_documents)       
 
         new_bboxes_data = dict()
         new_bboxes_data['image'] = self.current_data['image']
@@ -137,14 +139,26 @@ class MobileDetection(Controller):
         if 'camera_name' in self.current_data:
             new_bboxes_data['camera_name'] = self.current_data['camera_name']
 
+        if len(self.created_bboxes) == 0:
+            self.on_next_button_click(display_object)
+            return
+
         new_bboxes_data['bboxes'] = []
         
-        for bbox in self.created_bboxes:
+        def get_normalize_coords(bbox):
             x1,y1,x2,y2 = bbox.boundingRect().getCoords()
             x1 /= self.current_image_size.width()
             y1 /= self.current_image_size.height()
             x2 /= self.current_image_size.width()
             y2 /= self.current_image_size.height()
+            return x1,y1,x2,y2
+
+        for bbox in self.created_bboxes:
+            x1,y1,x2,y2 = get_normalize_coords(bbox)
+            new_bboxes_data['bboxes'].append([x1,y1,x2,y2])
+
+        for bbox in correct_bboxes:
+            x1,y1,x2,y2 = get_normalize_coords(bbox)
             new_bboxes_data['bboxes'].append([x1,y1,x2,y2])
 
         self.model.store_new_bboxes(new_bboxes_data)
