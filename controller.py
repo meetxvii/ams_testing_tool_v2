@@ -37,6 +37,7 @@ class Controller:
         self.update_status_bar()
 
     def update_status_bar(self):
+        self.actions.widgets['image_name'].setText(self.data[self.current_position]['_id'])
         self.actions.widgets['image_counter'].setText(f"{self.current_position+1}/{len(self.data)}")
 
 

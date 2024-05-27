@@ -12,7 +12,7 @@ docker build -t testingapp .
 
 1. Run the application:
 ```bash
-docker run --rm -it --network host -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -e XDG_RUNTIME_DIR=/tmp/runtime-qtuser -u qtuser   --security-opt apparmor=unconfined meetxvii/ams_testing_tool:1.0 python3 /app/app.py
+docker run --rm -it --network host -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -e XDG_RUNTIME_DIR=/tmp/runtime-qtuser -u qtuser   --security-opt apparmor=unconfined meetxvii/testingapp:2.0 python3 /app/app.py
 ```
 >Note: in case of ```no protocols specified``` error run 
 

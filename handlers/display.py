@@ -29,7 +29,7 @@ class Display:
         self.view.setScene(self.scene)
         self.view.show()
 
-        if constants.MODEL in ["Mobile Detection","Mobile Classification"]:
+        if constants.MODEL in ["Mobile Detection"]:
             self.view.enterEvent = lambda event : self.controller.enterEvent(event,self)
             self.view.leaveEvent = lambda event : self.controller.leaveEvent(event,self)
             self.view.mousePressEvent = lambda event : self.controller.mousePressEvent(event,self)
