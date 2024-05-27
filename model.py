@@ -28,6 +28,7 @@ class Model:
                         "$gte": datetime.fromisoformat(start_time),
                         "$lte": datetime.fromisoformat(end_time),
                     },
+                    "validated_by": {"$exists": False},
                 }
             },
             {
