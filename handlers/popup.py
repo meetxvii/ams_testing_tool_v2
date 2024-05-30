@@ -38,6 +38,9 @@ class SettingsPopup(PopUpWindow):
         self.widgets['database_settings'] = self.create_database_settings()
         self.layout.addLayout(self.widgets['database_settings'])
 
+        self.widgets['database_name'] = self.create_database_name()
+        self.layout.addLayout(self.widgets['database_name'])
+
         self.layout.addStretch()
         
         self.widgets['save_button'] = self.create_save_button()
@@ -87,6 +90,19 @@ class SettingsPopup(PopUpWindow):
         hbox.addWidget(self.data_base_url)
         return hbox
     
+    def create_database_name(self):
+        hbox = QHBoxLayout()
+        label = QLabel('Database Name')
+        label.setFixedWidth(150)
+
+        self.database_name = QLineEdit()
+        self.database_name.setText(constants.DATABASE_NAME)
+        self.database_name.setFixedWidth(150)
+
+        hbox.addWidget(label)
+        hbox.addWidget(self.database_name)
+        return hbox
+    
     def create_save_button(self):
         button = QPushButton('Save')
         button.clicked.connect(self.on_save_button_click)
@@ -95,6 +111,7 @@ class SettingsPopup(PopUpWindow):
     def on_save_button_click(self):
         constants.VALIDATOR_NAME = self.validator_name.text()
         constants.DATABASE_URL = self.data_base_url.text()
+        constants.DATABASE_NAME = self.database_name.text()
         self.window.hide()
         self.on_settings_saved.emit()
 
