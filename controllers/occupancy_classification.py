@@ -17,15 +17,18 @@ class OccupancyClassification(Controller):
         self.data = list(
             self.model.get_occupancy_data(site_name, floor_name, start_time, end_time)
         )
-        self.update_status_bar()
+        if len(self.data) != 0:
+            self.update_status_bar()
 
     def update_view(self, display_object):
         if len(self.data) == 0 :
             self.actions.widgets["status_bar"].showMessage("No data found")
+            display_object.scene.clear()
             return
         
         elif self.current_position >= len(self.data)-1:
             self.actions.widgets["status_bar"].showMessage("End of data")
+            display_object.scene.clear()
             return
         
         display_object.scene.clear()
