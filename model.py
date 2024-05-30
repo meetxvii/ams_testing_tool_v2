@@ -5,7 +5,7 @@ import constants
 
 class Model:
     def __init__(self) -> None:
-        self.client = MongoClient("localhost", 27017)
+        self.client = MongoClient("mongodb://192.168.1.5:27017/")
         self.db = self.client["people-occupancy"]
 
     def get_unique_sites(self):
