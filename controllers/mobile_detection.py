@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication,QGraphicsRectItem
+from PyQt5.QtWidgets import QApplication,QGraphicsRectItem, QGraphicsLineItem
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QPen, QBrush, QTransform, QPixmap
 from controller import Controller
@@ -78,6 +78,7 @@ class MobileDetection(Controller):
             return
 
         display_object.scene.clear()
+        display_object.view.resetTransform()
         documents = self.data[self.current_position]
 
         image_url = documents["_id"]
@@ -200,6 +201,10 @@ class MobileDetection(Controller):
                 QApplication.setOverrideCursor(Qt.CrossCursor)
             else:
                 QApplication.restoreOverrideCursor()        
+                display_object.scene.removeItem(self.horizontal_line)
+                self.horizontal_line = None
+                display_object.scene.removeItem(self.vertical_line)
+                self.vertical_line = None
 
     def mousePressEvent(self, event, display_object):
         scene_event = display_object.view.mapToScene(event.pos()) 
@@ -232,6 +237,9 @@ class MobileDetection(Controller):
            
             
     def mouseMoveEvent(self, event, display_object):
+        if self.drawing_mode:
+            self.draw_lines(event, display_object)
+        
         if not event.buttons() & Qt.LeftButton or self.current_rect is None:
             return
         if self.current_rect.is_creating:
@@ -244,8 +252,23 @@ class MobileDetection(Controller):
                     rect = QRectF(self.start_pos, scene_event).normalized()
                     clamped_rect = rect.intersected(view_rect)
                     self.current_rect.setRect(clamped_rect)
-        
-      
+
+    def draw_lines(self, event, display_object):
+        scene_event = display_object.view.mapToScene(event.pos())
+        if self.horizontal_line is not None:
+            self.horizontal_line.setLine(0, scene_event.y(), display_object.view.width(), scene_event.y())
+        else:
+            self.horizontal_line = QGraphicsLineItem(0, scene_event.y(), display_object.view.width(), scene_event.y())
+            self.horizontal_line.setPen(QPen(Qt.white, 2,Qt.DashLine))
+            display_object.scene.addItem(self.horizontal_line)
+
+        if self.vertical_line is not None:
+            self.vertical_line.setLine(scene_event.x(), 0, scene_event.x(), display_object.view.height())
+        else:
+            self.vertical_line = QGraphicsLineItem(scene_event.x(), 0, scene_event.x(), display_object.view.height())
+            self.vertical_line.setPen(QPen(Qt.white, 2,Qt.DashLine))
+            display_object.scene.addItem(self.vertical_line)
+
     def mouseReleaseEvent(self, event, display_object):
         if event.button() == Qt.LeftButton:
             self.start_pos = None

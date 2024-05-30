@@ -29,6 +29,7 @@ class Display:
         self.view.setScene(self.scene)
         self.controller.view = self.view
         self.controller.scene = self.scene
+        self.view.setMouseTracking(True)
         self.view.show()
 
         self.view.enterEvent = lambda event : self.controller.enterEvent(event,self)

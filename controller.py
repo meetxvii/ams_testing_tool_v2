@@ -10,6 +10,9 @@ class Controller:
         self.settings_window = SettingsPopup()
         self.settings_window.on_settings_saved.connect(self.on_settings_saved)
         self.filter_object = None
+        self.horizontal_line = None
+        self.vertical_line = None
+        self.drawing_mode = False
 
     def connect_database(self):
         self.model = Model()
@@ -92,6 +95,12 @@ class Controller:
         pass
 
     def wheelEvent(self, event, display_object):
+        if self.drawing_mode and self.horizontal_line is not None:
+            self.scene.removeItem(self.horizontal_line)
+            self.horizontal_line = None
+            self.scene.removeItem(self.vertical_line)
+            self.vertical_line = None            
+            
         change = event.angleDelta().y()//120
         display_object.view.scale(1+change/10,1+change/10)
         display_object.view.centerOn(display_object.view.mapToScene(event.pos()))

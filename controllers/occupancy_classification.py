@@ -13,7 +13,6 @@ class OccupancyClassification(Controller):
         self.current_position = 0
 
     def on_filter_button_click(self, filter_object):
-        print(self.model.connected)
         if not self.model.connected:
             self.actions.widgets["status_bar"].showMessage("Database not connected")
             return
@@ -45,6 +44,7 @@ class OccupancyClassification(Controller):
             return
         
         display_object.scene.clear()
+        display_object.view.resetTransform()
         documents = self.data[self.current_position]
 
         image_url = documents["_id"]
