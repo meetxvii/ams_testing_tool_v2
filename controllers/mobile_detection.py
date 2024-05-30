@@ -271,6 +271,11 @@ class MobileDetection(Controller):
 
     def mouseReleaseEvent(self, event, display_object):
         if event.button() == Qt.LeftButton:
+            if self.drawing_mode and self.horizontal_line is not None:
+                self.scene.removeItem(self.horizontal_line)
+                self.horizontal_line = None
+                self.scene.removeItem(self.vertical_line)
+                self.vertical_line = None
             self.start_pos = None
             self.current_rect = None
             self.drawing_mode = False
