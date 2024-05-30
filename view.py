@@ -42,6 +42,7 @@ class View(QObject):
         screen = self.app.primaryScreen()
         size = screen.availableSize()
         self.window.setFixedSize(size.width(), size.height())
+        self.window.closeEvent = self.on_window_close
         self.layout = QVBoxLayout()
     
     def create_signals(self):
@@ -49,7 +50,7 @@ class View(QObject):
         QShortcut("s", self.window).activated.connect(lambda:self.controller.on_approve_button_click(self.display))
         QShortcut("right",self.window).activated.connect(lambda:self.controller.on_next_button_click(self.display))
         QShortcut("left",self.window).activated.connect(lambda:self.controller.on_previous_button_click(self.display))
-        QShortcut(QKeySequence("Ctrl+Q"), self.window).activated.connect(self.on_window_close)
+        QShortcut(QKeySequence("Ctrl+Q"), self.window).activated.connect(self.on_window_change)
     
     def create_controller(self):
         if constants.MODEL == "Mobile Detection":
@@ -58,9 +59,14 @@ class View(QObject):
             return OccupancyClassification()
         
     def show_window(self):
+        if self.controller.model.connected and not self.controller.model.database_present:
+            self.actions.widgets['status_bar'].showMessage('Database not present')
         self.window.setLayout(self.layout)
         self.window.show()
     
-    def on_window_close(self):
+    def on_window_change(self):
         self.window.close()
         self.close_signal.emit()
+
+    def on_window_close(self,event):
+        self.controller.settings_window.window.close()

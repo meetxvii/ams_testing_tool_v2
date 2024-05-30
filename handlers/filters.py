@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QHBoxLayout,QComboBox,QDateTimeEdit,QPushButton
 from PyQt5.QtCore import QObject,pyqtSignal,QDate,QDateTime,QTime
+from PyQt5.QtGui import QIcon
 
 class Filters(QObject):
     on_filter_change = pyqtSignal()
@@ -27,6 +28,10 @@ class Filters(QObject):
         self.widgets['filter_button'] = self.create_filter_button()
         self.layout.addWidget(self.widgets['filter_button'])
 
+        self.widgets['config_button'] = self.create_config_button()
+
+        self.layout.addWidget(self.widgets['config_button'])
+
     def create_site_filter(self):
         site = QComboBox()
         site.currentTextChanged.connect(lambda : self.controller.on_site_change(self))
@@ -47,6 +52,17 @@ class Filters(QObject):
         filter_button = QPushButton('Filter')
         filter_button.clicked.connect(self.on_filter_button_click)
         return filter_button
+    
+    def create_config_button(self):
+        config_button = QPushButton('')
+        settings_icon= QIcon('icons/settings.png')
+        config_button.setIcon(settings_icon)
+        config_button.clicked.connect(self.on_settings_button_click)
+        config_button.setFixedWidth(30)
+        return config_button
+    
+    def on_settings_button_click(self):
+        self.controller.on_settings_button_click()
 
     def on_filter_button_click(self):
         self.controller.on_filter_button_click(self)

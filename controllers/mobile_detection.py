@@ -3,7 +3,7 @@ from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QPen, QBrush, QTransform, QPixmap
 from controller import Controller
 import requests
-from pprint import pprint
+
 
 class DrawableRectItem(QGraphicsRectItem):
     def __init__(self, rect=QRectF(), pen=QPen(Qt.green, 3), brush=QBrush(Qt.NoBrush)):
@@ -39,13 +39,17 @@ class DrawableRectItem(QGraphicsRectItem):
 class MobileDetection(Controller):
     def __init__(self) -> None:
         super().__init__()
-
+        self.current_data = None
         self.old_bboxes = dict()
         self.created_bboxes = []
         self.drawing_mode = False
         self.current_rect = None 
+        self.current_position = 0
 
     def on_filter_button_click(self, filter_object):
+        if not self.model.connected:
+            self.actions.widgets["status_bar"].showMessage("Database not connected")
+            return
         site_name = filter_object.widgets["site"].currentText()
         floor_name = filter_object.widgets["floor"].currentText()
         start_time = (
@@ -55,10 +59,14 @@ class MobileDetection(Controller):
         self.data = list(
             self.model.get_mobile_usages(site_name, floor_name, start_time, end_time)
         )
-        if len(self.data) != 0:
-            self.update_status_bar()
+        self.current_position = 0
+
+        self.update_status_bar()
 
     def update_view(self, display_object):
+        if self.model.connected == False:
+            self.actions.widgets["status_bar"].showMessage("Database not connected")
+            return
         if len(self.data) == 0 :
             self.actions.widgets["status_bar"].showMessage("No data found")
             display_object.scene.clear()
@@ -121,6 +129,11 @@ class MobileDetection(Controller):
 
        
     def on_approve_button_click(self, display_object):
+
+        if self.current_data is None:
+            self.actions.widgets["status_bar"].showMessage("No data found")
+            return
+
         correct_documents = []
         correct_bboxes = []
         wrong_documents = []

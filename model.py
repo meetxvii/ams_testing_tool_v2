@@ -1,17 +1,32 @@
-from pymongo import MongoClient
+import pymongo 
 from datetime import datetime
 import constants
 
 
 class Model:
     def __init__(self) -> None:
-        self.client = MongoClient("localhost")
-        self.db = self.client["people-occupancy"]
+        
+        self.client = pymongo.MongoClient(constants.DATABASE_URL)
+        try:
+            database_names = self.client.list_database_names()
+            self.connected = True
+        except :
+            self.connected = False
+        
+        if self.connected and constants.DATABASE_NAME  in database_names:
+            self.database_present = True
+            self.db = self.client[constants.DATABASE_NAME]
+        else:
+            self.database_present = False
 
     def get_unique_sites(self):
+        if not self.connected or not self.database_present:
+            return []
         return self.db["mobile_usages"].distinct("site_name")
 
     def get_floors(self, site):
+        if not self.connected or not self.database_present:
+            return []
         return (
             self.db["mobile_usages"]
             .find({"site_name": site})
@@ -19,6 +34,7 @@ class Model:
         )
 
     def get_mobile_usages(self, site, floor, start_time, end_time):
+        
         pipeline = [
             {
                 "$match": {
@@ -40,6 +56,7 @@ class Model:
         return self.db["mobile_usages"].aggregate(pipeline)
 
     def get_occupancy_data(self, site, floor, start_time, end_time):
+        
 
         pipeline = [
             {

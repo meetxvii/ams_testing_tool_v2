@@ -27,15 +27,16 @@ class Display:
         self.view = QGraphicsView()
         self.view.setFixedSize(1100,600)
         self.view.setScene(self.scene)
+        self.controller.view = self.view
+        self.controller.scene = self.scene
         self.view.show()
 
-        if constants.MODEL in ["Mobile Detection"]:
-            self.view.enterEvent = lambda event : self.controller.enterEvent(event,self)
-            self.view.leaveEvent = lambda event : self.controller.leaveEvent(event,self)
-            self.view.mousePressEvent = lambda event : self.controller.mousePressEvent(event,self)
-            self.view.mouseMoveEvent = lambda event : self.controller.mouseMoveEvent(event,self)
-            self.view.mouseReleaseEvent = lambda event : self.controller.mouseReleaseEvent(event,self)
-            self.view.keyPressEvent = lambda event : self.controller.keyPressEvent (event,self)
-            self.view.keyReleaseEvent = lambda event : self.controller.keyReleaseEvent(event,self)
+        self.view.enterEvent = lambda event : self.controller.enterEvent(event,self)
+        self.view.leaveEvent = lambda event : self.controller.leaveEvent(event,self)
+        self.view.mousePressEvent = lambda event : self.controller.mousePressEvent(event,self)
+        self.view.mouseMoveEvent = lambda event : self.controller.mouseMoveEvent(event,self)
+        self.view.mouseReleaseEvent = lambda event : self.controller.mouseReleaseEvent(event,self)
+        self.view.keyPressEvent = lambda event : self.controller.keyPressEvent (event,self)
+        self.view.keyReleaseEvent = lambda event : self.controller.keyReleaseEvent(event,self)
         self.view.wheelEvent = lambda event : self.controller.wheelEvent(event,self)
         return self.view

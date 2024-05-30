@@ -7,7 +7,16 @@ import constants
 
 
 class OccupancyClassification(Controller):
+    def __init__(self) -> None:
+        super().__init__()
+        self.roi_values = None
+        self.current_position = 0
+
     def on_filter_button_click(self, filter_object):
+        print(self.model.connected)
+        if not self.model.connected:
+            self.actions.widgets["status_bar"].showMessage("Database not connected")
+            return
         site_name = filter_object.widgets["site"].currentText()
         floor_name = filter_object.widgets["floor"].currentText()
         start_time = (
@@ -17,10 +26,14 @@ class OccupancyClassification(Controller):
         self.data = list(
             self.model.get_occupancy_data(site_name, floor_name, start_time, end_time)
         )
-        if len(self.data) != 0:
-            self.update_status_bar()
+        self.current_position = 0
+
+        self.update_status_bar()
 
     def update_view(self, display_object):
+        if self.model.connected == False:
+            self.actions.widgets["status_bar"].showMessage("Database not connected")
+            return
         if len(self.data) == 0 :
             self.actions.widgets["status_bar"].showMessage("No data found")
             display_object.scene.clear()
@@ -85,6 +98,9 @@ class OccupancyClassification(Controller):
                 self.roi_values.append(document["_id"])
 
     def on_approve_button_click(self, display_object):
+        if self.roi_values is None:
+            self.actions.widgets["status_bar"].showMessage("No data found")
+            return
         for database_id in self.roi_values:
             
             self.model.occupancy_classification_update_date(database_id, self.status_dic[database_id].status,constants.VALIDATOR_NAME)
