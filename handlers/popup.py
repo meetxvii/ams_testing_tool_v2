@@ -48,9 +48,6 @@ class SettingsPopup(PopUpWindow):
         
         self.layout.addStretch()
 
-        # Shortcuts
-        self.widgets['shortcuts'] = self.add_shortcuts()
-        self.layout.addLayout(self.widgets['shortcuts'])
 
         self.layout.addStretch()
 
@@ -115,34 +112,3 @@ class SettingsPopup(PopUpWindow):
         self.window.hide()
         self.on_settings_saved.emit()
 
-    def add_shortcuts(self):
-        vbox = QVBoxLayout()
-        header_label = QLabel('Shortcuts')
-        header_label.setAlignment(Qt.AlignCenter)
-        header_label.setStyleSheet('font-size: 20px;')
-        vbox.addWidget(header_label)
-
-        shortcuts = {
-            "Next Image": "Right Arrow",
-            "Previous Image": "Left Arrow",
-            "Approve Image": "S",
-            "Change Model": "Ctrl+Q"
-        }
-        for label,button in shortcuts.items():
-            hbox = QHBoxLayout()
-            hbox.addWidget(QLabel(label))
-
-            btn = QPushButton(button)
-            btn.setStyleSheet("""
-                QPushButton {
-                    background-color: #333;
-                    color: #fff;
-                    border-radius: 4px;
-                    padding: 4px 8px;
-                }
-            """)
-            hbox.addWidget(btn)
-            vbox.addLayout(hbox)
-
-        return vbox
-        

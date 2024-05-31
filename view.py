@@ -31,6 +31,8 @@ class View(QObject):
         # self.layout.addStretch()
 
         self.layout.addWidget(self.actions.widgets['status_bar'])
+        
+        self.layout.addLayout(self.actions.widgets['shortcuts_bar'])
         self.layout.addStretch()
 
         self.create_signals()

@@ -88,7 +88,11 @@ class MobileDetection(Controller):
         except Exception as e:
             self.actions.widgets["status_bar"].showMessage("Error loading image")
             return
-        image = image.scaled(1100, 1100, Qt.KeepAspectRatio)
+
+        screen_size = self.view.size()
+        idol_width = screen_size.width()
+        idol_height = screen_size.height()
+        image = image.scaled(idol_width, idol_height, Qt.KeepAspectRatio)
         self.current_image_size = image.size()
         display_object.scene.addPixmap(image)
 
